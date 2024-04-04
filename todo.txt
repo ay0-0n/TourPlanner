@@ -1,0 +1,6 @@
+Done Upto:
+    - Sign in excet for forget pass
+    - signUp with passoword hashing    
+
+- Implement forget password feature on login page
+- work on any page after login (tourist/hotelmanager/travelagent page)
