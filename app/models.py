@@ -10,7 +10,7 @@ class User(db.Model):
     email = db.Column(db.String, nullable=False, unique=True)
     username = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
-    role_id = db.Column(db.Integer(1), db.ForeignKey('roles.role_id'), nullable=False)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.role_id'), nullable=False)
     role = db.relationship('Role', backref=db.backref('users', lazy=True))
 
     def __repr__(self):
