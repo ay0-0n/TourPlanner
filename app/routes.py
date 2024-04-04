@@ -68,6 +68,18 @@ def signup():
 
     return render_template('signup.html')
 
+@app.route('/forgetpass', methods=['GET', 'POST'])
+def forgetpass():
+    if request.method == 'POST':
+        email = request.form['email']
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+            return redirect(url_for('login'))
+        else:
+            return render_template('forgetpass.html', error_message='Email not found, please try again!')
+    return render_template('forgetpass.html')
+
 @app.route('/tourist')
 def tourist():
     return render_template('tourist.html')

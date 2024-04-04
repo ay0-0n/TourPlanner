@@ -1,6 +1,6 @@
 Done Upto:
-    - Sign in excet for forget pass
+    - Sign in excet for forget pass(page done,also error messege,but sending mail not done)
     - signUp with passoword hashing    
 
-- Implement forget password feature on login page
+- Implement forget password mail feature
 - work on any page after login (tourist/hotelmanager/travelagent page)
