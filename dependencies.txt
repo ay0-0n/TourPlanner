@@ -1,0 +1,20 @@
+## what you need installed to run this project
+    ## search google 
+1. Create a virtul enmviroment 
+2. install flask 
+3. install flask_sqlalchemy (for sqlite db)
+4. install flask_bcrypt (for password hashing)
+
+
+* Dont touch the 
+    - templetes/model.py (for creating db models)
+    - templetes/__init__.py (for using this app as a package)
+    - app.py (to tun the project)
+
+* work on 
+    - templetes (for html templetes)
+    - routes.py (besically all the work should be done here)
+
+* how to run
+    - open the tourplanner.db in "DBbrowser for sql lite" (app, download from google) to see the changes in the database
+    - just run app.py file (normally as a python file) after installing all the pacakges.
