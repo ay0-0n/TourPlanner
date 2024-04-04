@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+
+{% block title %}
+  Tourist
+{% endblock %}
+{% block logout %}
+<a class="bg-txt text-white w-28 h-12 rounded-full flex justify-center items-center font-semibold hover:shadow-lg hover:text-primary" href="{{url_for('logout')}}">Logout</a>
+{% endblock %}
+{% block content %}
+  <section class="flex justify-center items-center h-screen">
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-txt">Welcome, {{ session['username'] }}</h1>
+      <p class="text-xl text-sml-txt">You are logged in as a tourist</p>
+    </div>
+  </section>
+{% endblock %}
