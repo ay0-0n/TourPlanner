@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block title %}
-  forgetpass
+  Resetpass
 {% endblock %}
 
 {% block style %}
@@ -12,8 +12,7 @@
       align-items: center;
       height: calc(100vh - 4.5rem);
     }
-
-    .forgetpass-container {
+    .resetpass-container {
       background-color: #fff;
       border-radius: 10px;
       padding: 20px;
@@ -25,13 +24,14 @@
       justify-content: center;
     }
 
-    .forgetpass-container h2 {
+    .resetpass-container h2 {
       margin-top: 0;
       text-align: center;
       font-size: 1.5rem;
       color: #131313;
       font-weight: bold;
     }
+
     .form-group {
       margin-bottom: 20px;
     }
@@ -43,16 +43,15 @@
       
     }
 
-    .form-group input[type="email"] {
+    .form-group input[type="password"] {
       width: calc(100% - 20px);
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 20px;
       width: 100%;
-      margin-top: 10px;
     }
 
-    .login-btn {
+    .resetpass-btn {
       margin-top: 10px;
       width: 100%;
       padding: 10px;
@@ -63,6 +62,23 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
+
+    .resetpass-btn:hover {
+      background-color: #7E42F1;
+    }
+
+    .signup-link {
+      display: block;
+      text-align: center;
+      font-size: 14px;
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .signup-link:hover {
+      text-decoration: underline;
+    }
+
     .error_message{
         text-align: center;
         text-decoration: double;
@@ -73,17 +89,23 @@
 {% endblock %}
 
 {% block content %}
-        <div class="forgetpass-container">
-            <h2>Recover Password</h2>
-            <form action="{{ url_for('forgetpass') }}" method="POST">
-                <div class="form-group">
-                    <label for="email">Enter your Email</label>
-                    <input type="email" name="email" id="email" placeholder="Enter your email" required>
-                </div>
-                {% if error_message %}
-                    <p class="error_message">{{ error_message }}</p>
-                {% endif %}
-                <button type="submit" class="login-btn">Submit</button>
-            </form>
-        </div>
+
+  <div class="resetpass-container">
+    <h2>Reset Password</h2>
+    <form action="/resetpass" method="POST">
+      <div class="form-group">
+        <label for="password">New Password</label>
+        <input type="password" id="password" name="password" placeholder="New password">
+      </div>
+      <div class="form-group">
+        <label for="password">Confirm Password</label>
+        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm password">
+      </div>
+      {% if error_message %}
+        <p class="error_message">{{ error_message }}</p>
+     {% endif %}
+      <button type="submit" class="resetpass-btn">Confirm</button>
+    </form>
+  </div>
+
 {% endblock %}

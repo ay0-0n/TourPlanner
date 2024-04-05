@@ -1,6 +1,7 @@
 Done Upto:
-    - Sign in excet for forget pass(page done,also error messege,but sending mail not done)
+    - Sign in with passoword recovery using otp
     - signUp with passoword hashing    
 
-- Implement forget password mail feature
-- work on any page after login (tourist/hotelmanager/travelagent page)
+ToDO:
+    - password recovery otp works for gmail and gsuite. doesn't work on yahoo. 
+    - work on any page after login (tourist/hotelmanager/travelagent page)
