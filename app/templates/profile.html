@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 1000px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .profile-details {
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .detail {
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-weight: bold;
+      color: #555;
+    }
+
+    span {
+      margin-left: 10px;
+      color: #333;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  
+  
+
+  <div class="container">
+
+    {% if user.user_type == 'tourist' %}
+    <h1>Welcome Tourist!</h1>
+    {% endif %}
+    {% if user.user_type == 'hotel-manager' %}
+    <h1>Welcome Hotel Manager!</h1>
+    {% endif %}
+    {% if user.user_type == 'transport-agent' %}
+    <h1>Welcome Transport Agent!</h1>
+    {% endif %}
+    
+    <div class="profile-details">
+      <h2>Profile Details</h2>
+      <div class="detail">
+        <label for="firstName">First Name:</label>
+        <span id="firstName">{{user.first_name}}</span>
+      </div>
+      <div class="detail">
+        <label for="lastName">Last Name:</label>
+        <span id="lastName">{{user.last_name}}</span>
+      </div>
+      <div class="detail">
+        <label for="phoneNumber">Phone Number:</label>
+        <span id="phoneNumber">{{user.phone_number}}</span>
+      </div>
+      <div class="detail">
+        <label for="email">Email:</label>
+        <span id="email">{{user.email}}</span>
+      </div>
+      {% if user.user_type == 'tourist' %}
+      <a href="{{url_for('reservation')}}" class="button">Make a Reservation</a> 
+      {% endif %}
+
+      {% if user.user_type == 'hotel-manager' %}
+      <a href="{{url_for('manage_hotel')}}" class="button">Manage your Hotels</a> 
+      {% endif %}
+      
+      {% if user.user_type == 'transport-agent' %}
+      <a href="{{url_for('manage_transport')}}" class="button">Manage your Transports</a> 
+      {% endif %}
+      
+      
+      <a href="{{url_for('logout')}}" class="button">Logout</a>
+    </div> 
+  </div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Transport</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    form {
+        max-width: 400px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    input[type="number"],
+    select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    input[type="submit"] {
+        width: 100%;
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    </style>
+</head>
+<body>
+    <h2>Add Transport</h2>
+    <form action="/manage_transport" method="post">
+        <label for="transport_type">Transport Type:</label>
+        <select id="transport_type" name="transport_type" required>
+            <option value="Bus">Bus</option>
+            <option value="Rental Car">Rental Car</option>
+            <option value="Air">Air</option>
+        </select><br><br>
+
+
+        <label for="availability">Availability:</label>
+        <select id="availability" name="availability" required>
+            <option value="True">Available</option>
+            <option value="False">Not Available</option>
+        </select><br><br>
+
+        <label for="cost">Cost:</label>
+        <input type="number" id="cost" name="cost" required><br><br>
+
+        <label for="destination">Destination:</label>
+        <select id="destination" name="destination">
+            {% for destination in destinations %}
+            <option value="{{destination.destination_id}}">{{destination.destination_name}}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <input type="submit" value="Add Transport">
+    </form>
+</body>
+</html>
