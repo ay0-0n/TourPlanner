@@ -45,11 +45,14 @@ class TransportAgent(db.Model):
     transport_id = db.Column(db.Integer, primary_key=True)
     transport_type = db.Column(db.String(100))
     availability = db.Column(db.Boolean, default=True)
+    cost = db.Column(db.Integer, nullable = False)
+    dest_id = db.Column(db.Integer, db.ForeignKey('tour_destinations.destination_id'), nullable=False)
     agent_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     agent = db.relationship('User', backref=db.backref('transport_agents', lazy=True))
 
     def __repr__(self):
         return f"<TransportAgent(transport_id={self.transport_id}, transport_type={self.transport_type})>"
+
 
 class TourDestination(db.Model):
     __tablename__ = 'tour_destinations'
