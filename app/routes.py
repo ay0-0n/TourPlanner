@@ -24,23 +24,14 @@ def login():
         password = request.form['password']
         
         try:
-            user = User.query.filter_by(username=username).first()
-
-            if user and bcrypt.check_password_hash(user.password, password):
-                session["username"] = user.username
-                if user.role_id == 0:
-                    return redirect(url_for('tourist'))
-                elif user.role_id == 1:
-                    return redirect(url_for('hotelmanager'))
-                elif user.role_id == 2:
-                    return redirect(url_for('travelagent'))
-            else:
-                return render_template('login.html', error_message='Invalid username or password!')
+            current_user = User.query.filter_by(username = username, password= password).one()
+            session["current_user"] = current_user.username
+            session['user_type'] = current_user.user_type
+            return redirect(url_for('profile'))
         
         except:
-            return render_template('login.html', error_message='Invalid username or password!')
+            return render_template('login.html', error='Invalid username or password!')
         
-
     return render_template('login.html')
 
 
@@ -132,19 +123,110 @@ def forgetpass():
     return render_template('forgetpass.html')
 
 
-@app.route('/tourist')
-def tourist():
-    return render_template('tourist.html')
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if 'current_user' in session:
+        username = session['current_user']
+        current_user = User.query.filter_by(username = username).first()
+        return render_template('profile.html', user = current_user)
+    else:
+        return redirect(url_for('login'))
 
-@app.route('/hotelmanager')
-def hotelmanager():
-    return render_template('hotelmanager.html')
+@app.route('/reservation', methods = ['GET', 'POST'])
+def reservation():
+    if 'current_user' in session and session['user_type'] == 'tourist':
+        username = session['current_user']
+        current_user = User.query.filter_by(username = username).first()
+    else:
+        return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        selected_destination = request.form['destination']
+        return redirect(url_for('select_hotel', destination = selected_destination))
 
-@app.route('/travelagent')
-def travelagent():
-    return render_template('travelagent.html')
+    destinations = TourDestination.query.all()
+    return render_template('reservation.html', destinations = destinations)
+
+
+
+
+
+@app.route('/select_hotel', methods=['GET', 'POST'])
+def select_hotel():
+    destination_id = request.args.get('destination')
+
+    if request.method == 'POST':
+        destination_id = request.form['destination']
+        selected_hotel = request.form['hotel']
+        return redirect(url_for('select_transport', hotel=selected_hotel, destination=destination_id))
+    
+    hotels = Hotels.query.filter_by(dest_id=destination_id).all()
+    return render_template('select_hotel.html', destination = destination_id, hotels=hotels)
+
+
+
+
+
+
+@app.route('/select_transport', methods = ['GET', 'POST'])
+def select_transport():
+    destination_id = request.args.get('destination')
+    hotel_id = request.args.get('hotel')
+
+
+    transports = TransportAgent.query.filter_by(dest_id = destination_id)
+    return render_template('select_transport.html', destination_id=destination_id, hotel_id=hotel_id, transports = transports)
+
+
+    
+
+
+
+
+@app.route('/manage_hotel', methods = ['GET', 'POST'])
+def manage_hotel():
+    if 'current_user' in session and session['user_type'] == 'hotel-manager':
+        username = session['current_user']
+        current_user = User.query.filter_by(username = username).first()
+    else:
+        return redirect(url_for('profile'))
+
+    if request.method == 'POST':
+        hotel_name = request.form['hotel_name']
+        hotel_location = request.form['hotel_location']
+        destination_id = request.form['destination'] 
+
+        new_hotel = Hotels(hotel_name = hotel_name, hotel_location = hotel_location, manager_id = current_user.user_id, dest_id = destination_id)
+        db.session.add(new_hotel)
+        db.session.commit()
+
+    destinations = TourDestination.query.all()
+    return render_template('manage_hotels.html', destinations = destinations)
+    
+
+@app.route('/manage_transport', methods = ['GET', 'POST'])
+def manage_transport():
+    if 'current_user' in session and session['user_type'] == 'transport-agent':
+        username = session['current_user']
+        current_user = User.query.filter_by(username = username).first()
+    else:
+        return redirect(url_for('profile'))
+
+    if request.method == 'POST':
+        transport_type = request.form['transport_type']
+        availability = request.form['availability'] == 'True'
+        cost = int(request.form['cost'])
+        destination_id = request.form['destination']
+
+        new_transport = TransportAgent(transport_type = transport_type, availability = availability, agent_id = current_user.user_id, cost = cost, dest_id = destination_id)
+        db.session.add(new_transport)
+        db.session.commit()
+
+    destinations = TourDestination.query.all()
+    return render_template('manage_transports.html', destinations = destinations)
     
 @app.route('/logout')
 def logout():
     session.pop('username', None)
+    session.pop('user_type', None)
     return redirect(url_for('login'))
