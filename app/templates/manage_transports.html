@@ -1,17 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Transport</title>
-    <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-    }
+{% extends "index.html" %}
 
+{% block title %}
+Add Transport
+{% endblock %}
+
+{% block logout %}
+<a class="bg-txt text-white w-28 h-12 rounded-full flex justify-center items-center font-semibold hover:shadow-lg hover:text-primary" href="{{url_for('logout')}}">Logout</a>
+{% endblock %}
+
+{% block style %}
+<style>
     h2 {
         text-align: center;
     }
@@ -31,14 +29,6 @@
     }
 
     input[type="text"],
-    select {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-
     input[type="number"],
     select {
         width: 100%;
@@ -63,9 +53,44 @@
         background-color: #0056b3;
     }
 
-    </style>
-</head>
-<body>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .button {
+        padding: 5px 10px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .button:hover {
+        background-color: #c82333;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div>
     <h2>Add Transport</h2>
     <form action="/manage_transport" method="post">
         <label for="transport_type">Transport Type:</label>
@@ -74,7 +99,6 @@
             <option value="Rental Car">Rental Car</option>
             <option value="Air">Air</option>
         </select><br><br>
-
 
         <label for="availability">Availability:</label>
         <select id="availability" name="availability" required>
@@ -94,5 +118,32 @@
 
         <input type="submit" value="Add Transport">
     </form>
-</body>
-</html>
+</div>
+
+<div>
+    <h2>Manage Transports</h2>
+    <table>
+        <tr>
+            <th>Transport Type</th>
+            <th>Availability</th>
+            <th>Cost</th>
+            <th>Destination</th>
+            <th>Action</th>
+        </tr>
+        {% for transport in transports %}
+        <tr>
+            <td>{{ transport.transport_type }}</td>
+            <td>{{ "Available" if transport.availability else "Not Available" }}</td>
+            <td>{{ transport.cost }}</td>
+            <td>{{ get_destination_name(transport.dest_id) }}</td>
+            <td>
+                <a href="{{ url_for('toggle_transport', transport_id=transport.transport_id) }}" class="button">{{ "Toggle Off" if transport.availability else "Toggle On" }}</a>
+                <a href="{{ url_for('delete_transport', transport_id=transport.transport_id) }}" class="button">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<a href="{{url_for('profile')}}" class="bg-black text-white p-2">Go to Profile</a>
+{% endblock %}

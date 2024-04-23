@@ -1,9 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tour Selection</title>
+{% extends "index.html" %}
+
+{% block title %}
+    Tour Selection
+{% endblock %}
+
+{% block style %}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,8 +57,13 @@
             background-color: #0056b3;
         }
     </style>
-</head>
-<body>
+{% endblock %}
+
+{% block logout%}
+<a class="bg-txt text-white w-28 h-12 rounded-full flex justify-center items-center font-semibold hover:shadow-lg hover:text-primary" href="{{url_for('logout')}}">Logout</a>
+{% endblock %}
+  
+{% block content %}
 
 <div class="container">
     <h1>Tour Reservation</h1>
@@ -72,7 +78,7 @@
         </div>
         <button type="submit" class="btn-submit">Submit</button>
     </form>
+    <a href="{{url_for('profile')}}" class="bg-black text-white p-2">Go to Profile</a>
 </div>
 
-</body>
-</html>
+{% endblock %}

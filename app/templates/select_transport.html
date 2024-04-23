@@ -1,9 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tour Selection</title>
+{% extends "index.html" %}
+
+{% block title %}
+    Transport Selection
+{% endblock %}
+
+{% block style %}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,8 +57,13 @@
             background-color: #0056b3;
         }
     </style>
-</head>
-<body>
+{% endblock %}
+
+{% block logout%}
+<a class="bg-txt text-white w-28 h-12 rounded-full flex justify-center items-center font-semibold hover:shadow-lg hover:text-primary" href="{{url_for('logout')}}">Logout</a>
+{% endblock %}
+  
+{% block content %}
 
 <div class="container">
     <h1>Tour Reservation</h1>
@@ -66,14 +72,17 @@
             <label for="transport">Select Transport:</label>
             <select id="transport" name="transport">
                 {% for transport in transports %}
-                    <option value="{{transport.transport_id}}">{{transport.transport_type}}</option>
+                    <option value="{{transport.transport_id}}">
+                            {{transport.transport_type}} $:{{transport.cost}}tk
+                    </option>
                 {% endfor %}
             </select>
         </div>
         <input type="hidden" name="destination" value="{{ destination }}">
+        <input type="hidden" name="hotel" value="{{ hotel }}">
         <button type="submit" class="btn-submit">Submit</button>
     </form>
+    <a href="{{url_for('profile')}}" class="bg-black text-white p-2">Go to Profile</a>
 </div>
 
-</body>
-</html>
+{% endblock %}

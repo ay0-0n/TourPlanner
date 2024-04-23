@@ -10,20 +10,10 @@ class User(db.Model):
     email = db.Column(db.String, nullable=False, unique=True)
     username = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.role_id'), nullable=False)
-    role = db.relationship('Role', backref=db.backref('users', lazy=True))
+    role_id = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return f"<User(user_id={self.user_id}, username={self.username})>"
-
-class Role(db.Model):
-    __tablename__ = 'roles'
-
-    role_id = db.Column(db.Integer, primary_key=True)
-    role_name = db.Column(db.String(50), nullable=False)
-
-    def __repr__(self):
-        return f"<Role(role_id={self.role_id}, role_name={self.role_name})>"
 
 class Hotels(db.Model):
     __tablename__ = 'hotels'
@@ -39,8 +29,8 @@ class Hotels(db.Model):
     def __repr__(self):
         return f"<Hotel(hotel_id={self.hotel_id}, hotel_name={self.hotel_name})>"
 
-class TransportAgent(db.Model):
-    __tablename__ = 'transport_agents'
+class Transports(db.Model):
+    __tablename__ = 'transports'
 
     transport_id = db.Column(db.Integer, primary_key=True)
     transport_type = db.Column(db.String(100))
@@ -60,13 +50,11 @@ class TourDestination(db.Model):
     destination_id = db.Column(db.Integer, primary_key=True)
     destination_name = db.Column(db.String(100))
     destination_description = db.Column(db.Text)
-
     def __repr__(self):
         return f"<TourDestination(destination_id={self.destination_id}, destination_name={self.destination_name})>"
 
 class Rooms(db.Model):
     __tablename__ = 'rooms'
-
     room_id = db.Column(db.Integer, primary_key=True)
     room_no = db.Column(db.String(20))
     room_type = db.Column(db.String(50))
@@ -89,15 +77,6 @@ class Reviews(db.Model):
     def __repr__(self):
         return f"<Review(user_id={self.user_id}, dest_id={self.dest_id})>"
 
-class Transports(db.Model):
-    __tablename__ = 'transports'
-
-    dest_id = db.Column(db.Integer, db.ForeignKey('tour_destinations.destination_id'), primary_key=True)
-    transport_id = db.Column(db.Integer, db.ForeignKey('transport_agents.transport_id'), primary_key=True)
-    cost = db.Column(db.Float)
-
-    def __repr__(self):
-        return f"<Transport(dest_id={self.dest_id}, transport_id={self.transport_id})>"
 
 class Reservation(db.Model):
     __tablename__ = 'reservations'
@@ -105,9 +84,8 @@ class Reservation(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), primary_key=True)
     reservation_id = db.Column(db.Integer, primary_key=True)
     reservation_date = db.Column(db.DateTime)
-    transport_id = db.Column(db.Integer, db.ForeignKey('transport_agents.transport_id'))
+    transport_id = db.Column(db.Integer, db.ForeignKey('transports.transport_id'))
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.room_id'))
-    reservation_time = db.Column(db.DateTime)
     arrival_date = db.Column(db.DateTime)
     departure_date = db.Column(db.DateTime)
     dinner_reservation = db.Column(db.Boolean)

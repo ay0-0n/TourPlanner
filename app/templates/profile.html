@@ -1,21 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f2f2f2;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+{% extends "index.html" %}
 
+{% block title %}
+  Dashboard
+{% endblock %}
+
+{% block style %}
+  <style>
     .container {
       width: 1000px;
       padding: 20px;
@@ -64,20 +54,22 @@
       background-color: #0056b3;
     }
   </style>
-</head>
-<body>
-  
-  
+{% endblock %}
 
+{% block logout%}
+<a class="bg-txt text-white w-28 h-12 rounded-full flex justify-center items-center font-semibold hover:shadow-lg hover:text-primary" href="{{url_for('logout')}}">Logout</a>
+{% endblock %}
+  
+{% block content %}
   <div class="container">
 
-    {% if user.user_type == 'tourist' %}
+    {% if user.role_id == 0 %}
     <h1>Welcome Tourist!</h1>
     {% endif %}
-    {% if user.user_type == 'hotel-manager' %}
+    {% if user.role_id == 1 %}
     <h1>Welcome Hotel Manager!</h1>
     {% endif %}
-    {% if user.user_type == 'transport-agent' %}
+    {% if user.role_id == 2 %}
     <h1>Welcome Transport Agent!</h1>
     {% endif %}
     
@@ -99,21 +91,18 @@
         <label for="email">Email:</label>
         <span id="email">{{user.email}}</span>
       </div>
-      {% if user.user_type == 'tourist' %}
+      {% if user.role_id == 0 %}
       <a href="{{url_for('reservation')}}" class="button">Make a Reservation</a> 
+      <a href="{{url_for('add_review')}}" class="button">Add a Review</a>
       {% endif %}
 
-      {% if user.user_type == 'hotel-manager' %}
-      <a href="{{url_for('manage_hotel')}}" class="button">Manage your Hotels</a> 
+      {% if user.role_id == 1 %}
+      <a href="{{url_for('manage_hotel')}}" class="button">Manage your Hotel</a> 
       {% endif %}
       
-      {% if user.user_type == 'transport-agent' %}
+      {% if user.role_id == 2 %}
       <a href="{{url_for('manage_transport')}}" class="button">Manage your Transports</a> 
       {% endif %}
-      
-      
-      <a href="{{url_for('logout')}}" class="button">Logout</a>
     </div> 
   </div>
-</body>
-</html>
+{% endblock %}

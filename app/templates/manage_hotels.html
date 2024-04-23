@@ -1,17 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Hotel</title>
-    <style>
-    body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
+{% extends "index.html" %}
 
+{% block title %}
+Add Hotel
+{% endblock %}
+
+{% block logout%}
+<a class="bg-txt text-white w-28 h-12 rounded-full flex justify-center items-center font-semibold hover:shadow-lg hover:text-primary" href="{{url_for('logout')}}">Logout</a>
+{% endblock %}
+
+{% block style %}
+    <style>
 h2 {
     text-align: center;
 }
@@ -55,8 +53,10 @@ input[type="submit"]:hover {
 }
 
     </style>
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
+    <div>
     <h2>Add Hotel</h2>
     <form action="/manage_hotel" method="post">
         <label for="hotel_name">Hotel Name:</label>
@@ -74,5 +74,5 @@ input[type="submit"]:hover {
 
         <input type="submit" value="Add Hotel">
     </form>
-</body>
-</html>
+</div>
+{% endblock %}

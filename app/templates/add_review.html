@@ -1,0 +1,83 @@
+{% extends "index.html" %}
+
+{% block title %}
+  Dashboard
+{% endblock %}
+
+{% block style %}
+<style>
+    form {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        box-sizing: border-box;
+        resize: vertical;
+        color: black;
+    }
+
+    button[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock %}
+
+{% block logout %}
+<a class="bg-txt text-white w-28 h-12 rounded-full flex justify-center items-center font-semibold hover:shadow-lg hover:text-primary" href="{{ url_for('logout') }}">Logout</a>
+{% endblock %}
+  
+{% block content %}
+<h1>Add Review</h1>
+<form method="POST">
+    <div>
+        <label for="destination">Destination:</label>
+        <select id="destination" name="destination" required>
+            {% for destination in destinations %}
+                <option value="{{ destination.destination_id}}">{{ destination.destination_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label for="review">Review:</label>
+        <textarea id="review" name="review" rows="4" required></textarea>
+    </div>
+    <div>
+        <label for="rating">Rating:</label>
+        <select id="rating" name="rating" required>
+            <option value="5">5 - Excellent</option>
+            <option value="4">4 - Very Good</option>
+            <option value="3">3 - Good</option>
+            <option value="2">2 - Fair</option>
+            <option value="1">1 - Poor</option>
+        </select>
+    </div>
+    <button type="submit">Submit Review</button>
+</form>
+{% endblock %}

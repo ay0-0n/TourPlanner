@@ -1,0 +1,121 @@
+<!-- add_rooms.html -->
+{% extends "index.html" %}
+
+{% block title %}
+Add Rooms
+{% endblock %}
+
+{% block logout %}
+<a class="bg-txt text-white w-28 h-12 rounded-full flex justify-center items-center font-semibold hover:shadow-lg hover:text-primary" href="{{url_for('logout')}}">Logout</a>
+{% endblock %}
+
+{% block style %}
+<style>
+    h2 {
+        text-align: center;
+    }
+
+    form {
+        max-width: 400px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    input[type="submit"] {
+        width: 100%;
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div>
+    <h2>Add Rooms</h2>
+    <form action="/add_rooms" method="post">
+        <label for="room_no">Room Number:</label>
+        <input type="text" id="room_no" name="room_no" required><br><br>
+
+        <label for="room_type">Room Type:</label>
+        <input type="text" id="room_type" name="room_type" required><br><br>
+
+        <label for="cost">Cost:</label>
+        <input type="text" id="cost" name="cost" required><br><br>
+
+        <label for="availability">Availability:</label>
+        <select id="availability" name="availability">
+            <option value="True">Available</option>
+            <option value="False">Not Available</option>
+        </select><br><br>
+
+        <input type="submit" value="Add Room">
+    </form>
+</div>
+<a href="{{url_for('profile')}}" class="bg-black text-white p-2">Go to Profile</a>
+
+<div>
+    <h2>Added Rooms</h2>
+    <table>
+        <tr>
+            <th>Room Number</th>
+            <th>Room Type</th>
+            <th>Cost</th>
+            <th>Availability</th>
+        </tr>
+        {% for room in rooms %}
+        <tr>
+            <td>{{ room.room_no }}</td>
+            <td>{{ room.room_type }}</td>
+            <td>{{ room.cost }}</td>
+            <td>{{ "Available" if room.availability else "Not Available" }}</td>
+
+            <td><a href="{{ url_for('toggle_room', room_id=room.room_id) }}" class="bg-black text-white p-1">Toggle Availability</a></td>
+            <td><a href="{{ url_for('delete_room', room_id=room.room_id) }}" class="bg-black text-white p-1">Delete Room</a></td>
+
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

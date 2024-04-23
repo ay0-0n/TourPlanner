@@ -4,8 +4,8 @@
 2. install flask 
 3. install flask_sqlalchemy (for sqlite db)
 4. install flask_bcrypt (for password hashing)
-5. install flask-mail (for password reset mail)
-
+5. install pdfkit
+6. https://wkhtmltopdf.org/downloads.html
 
 * Dont touch the 
     - templetes/model.py (for creating db models)
