@@ -13,6 +13,10 @@
 </style>
 {% endblock %}
 
+{% block seeDestination %}
+<a class="bg-txt text-white px-3 h-12 rounded-full flex justify-center items-center font-semibold hover:shadow-lg hover:text-primary" href="{{url_for('see_destination')}}">See Destination</a>
+{% endblock %}
+
 {% block content %}
 <div class="flex flex-row  justify-between bg-secondary hero">
     <div class="h-full flex flex-col justify-center pl-10 space-y-4">

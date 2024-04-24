@@ -31,6 +31,8 @@
     <header>
         <nav class="bg-secondary mx-auto flex justify-between items-center px-5 py-4 border-b-[1px] border-txt h-[4.5rem]">
                 <a href="{{ url_for('index')}}" class="text-txt font-bold text-4xl"><span class="text-primary">Tour</span>Planner</a>
+                {% block seeDestination%}
+                {% endblock %}
                 {% block logout%}
                 {% endblock %}
             </div>

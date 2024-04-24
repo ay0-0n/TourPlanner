@@ -1,7 +1,0 @@
-Done Upto:
-    - Sign in with passoword recovery using otp
-    - signUp with passoword hashing    
-
-ToDO:
-    - password recovery otp works for gmail and gsuite. doesn't work on yahoo. 
-    - work on any page after login (tourist/hotelmanager/travelagent page)

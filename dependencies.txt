@@ -1,21 +1,19 @@
 ## what you need installed to run this project
-    ## search google 
-1. Create a virtul enmviroment 
-2. install flask 
-3. install flask_sqlalchemy (for sqlite db)
-4. install flask_bcrypt (for password hashing)
-5. install pdfkit
-6. https://wkhtmltopdf.org/downloads.html
-
-* Dont touch the 
-    - templetes/model.py (for creating db models)
-    - templetes/__init__.py (for using this app as a package)
-    - app.py (to tun the project)
-
-* work on 
-    - templetes (for html templetes)
-    - routes.py (besically all the work should be done here)
+    1. Create a virtul enmviroment 
+        - Not mandatory
+    2. install flask
+    3. install flask_sqlalchemy 
+        - For manageing the database
+        - To see real time changes in db, open the intances/users.db with 'DB Browser for SQlite' app
+    4. install flask_bcrypt 
+        - For password hashing
+    5. install pdfkit. 
+        - To generate pdf
+    6. Download wkhtml in your local computer.
+        = To convert html to pdf 
+        - https://wkhtmltopdf.org/downloads.html
 
 * how to run
-    - open the tourplanner.db in "DBbrowser for sql lite" (app, download from google) to see the changes in the database
-    - just run app.py file (normally as a python file) after installing all the pacakges.
+    - Open the db in "DBbrowser for sql lite" (app, download from google) to see the changes in the database
+    - Install all the dependencies.
+    - Run app.py file (normally as a python file) after installing all the pacakges.

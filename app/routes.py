@@ -2,24 +2,25 @@ from app import app, db
 from flask import redirect, render_template, url_for, request, session, flash, make_response
 from app.models import *
 from flask_bcrypt import Bcrypt
-# from flask_mail import Mail, Message
 from random import *
 from datetime import datetime 
 import pdfkit
-
-
-# app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-# app.config['MAIL_PORT'] = 465
-# app.config['MAIL_USERNAME'] = 'tourplanner.dev@gmail.com'
-# app.config['MAIL_PASSWORD'] = 'kmox qqhn pkzk xbws'
-# app.config['MAIL_USE_TLS'] = False
-# app.config['MAIL_USE_SSL'] = True
 
 
 @app.route('/')
 @app.route('/home')
 def index():
     return render_template("home.html")
+
+@app.route('/see_destination', methods=['GET', 'POST'])
+def see_destination():
+    destinations = TourDestination.query.all()
+    destination_reviews = {}
+    for destination in destinations:
+        reviews = Reviews.query.filter_by(dest_id=destination.destination_id).limit(3).all()
+        destination_reviews[destination] = reviews
+    return render_template('see_destination.html', destinations=destinations, destination_reviews=destination_reviews)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -48,6 +49,8 @@ def login():
         return render_template('login.html', error_message=error_message)
 
     return render_template('login.html')
+
+
 
 bcrypt = Bcrypt()
 
@@ -309,7 +312,6 @@ def download_invoice():
     response.headers['Content-Disposition'] = 'inline; filename=invoice.pdf'
     return response
 
-#______________________________________________________________
 @app.route('/add_review', methods=['GET', 'POST'])
 def add_review():
     if request.method == 'POST':
@@ -407,6 +409,35 @@ def delete_room(room_id):
     db.session.commit()
     return redirect(url_for('add_rooms'))
 
+@app.route('/change_hotel_details', methods=['GET', 'POST'])
+def change_hotel_details():
+    if request.method == 'POST':
+        new_hotel_name = request.form.get('new_hotel_name', None)
+        new_hotel_location = request.form.get('new_hotel_location', None)
+        new_destination_id = request.form['new_destination_id']
+
+        current_user = User.query.filter_by(username=session['current_user']).first()
+        manager_id = current_user.user_id
+
+        hotel = Hotels.query.filter_by(manager_id=manager_id).first()
+        if hotel:
+            if new_hotel_name:
+                hotel.hotel_name = new_hotel_name
+            if new_hotel_location:
+                hotel.hotel_location = new_hotel_location
+            hotel.dest_id = new_destination_id
+            db.session.commit()
+            return redirect(url_for('profile'))
+        else:
+            error = "You have not added any hotel yet."
+            destinations = TourDestination.query.all()
+            return render_template('change_hotel_details.html', error=error, destinations=destinations)
+
+    destinations = TourDestination.query.all()
+    return render_template('change_hotel_details.html', destinations=destinations)
+
+
+
 def get_destination_name(dest_id):
     destination = TourDestination.query.get(dest_id)
     return destination.destination_name if destination else "Unknown"    
@@ -457,55 +488,3 @@ def logout():
     session.pop('user_type', None)
     session.pop('booking_data', None)
     return redirect(url_for('login'))
-
-
-# mail = Mail(app)
-# otp = randint(1000, 9999)
-
-# def send_mail(email):
-#     msg = Message('OTP: Tour planner', sender='tourplanner.dev@gmail.com', recipients=[email])
-#     msg.body = str(otp)
-#     mail.send(msg)
-#     return redirect(url_for('otpcheck', email=email))
-
-# @app.route('/otpcheck', methods=['GET','POST'])
-# def otpcheck():
-#     if request.method == 'POST':
-#         user_otp = request.form['otp']
-#         if otp == int(user_otp):
-#             return redirect(url_for('resetpass'))
-#         else:
-#             return render_template('otpcheck.html', error_message='Invalid OTP, please try again!')
-#     return render_template('otpcheck.html')
-
-# @app.route('/resetpass', methods=['GET', 'POST'])
-# def resetpass():
-#     email = session.get('email')
-#     if request.method == 'POST':
-#         password = request.form['password']
-#         confirm_password = request.form['confirm-password']
-#         if password == confirm_password:
-#             hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-#             user = User.query.filter_by(email=email).first() 
-#             user.password = hashed_password
-#             db.session.commit()
-#             session.pop('email')
-#             return redirect(url_for('login'))
-#         else:
-#             return render_template('resetpass.html', error_message='Password does not match, please try again!')
-    
-#     return render_template('resetpass.html')
-
-# @app.route('/forgetpass', methods=['GET', 'POST'])
-# def forgetpass():
-#     if request.method == 'POST':
-#         email = request.form['email']
-#         user = User.query.filter_by(email=email).first()
-
-#         if user:
-#             session['email'] = email
-#             send_mail(email)
-#             return redirect(url_for('otpcheck'))
-#         else:
-#             return render_template('forgetpass.html', error_message='Email not found, please try again!')
-#     return render_template('forgetpass.html')

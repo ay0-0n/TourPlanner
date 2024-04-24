@@ -12,11 +12,15 @@
       background-color: #fff;
       border-radius: 10px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      margin: 0 auto;
+      margin-top: 20px;
     }
 
-    h1 {
+    .container h1{
       text-align: center;
       color: #333;
+      font-size: 2rem;
+      margin-bottom: 20px;
     }
 
     .profile-details {
@@ -24,6 +28,12 @@
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-details h2{
+      color: #333;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
     }
 
     .detail {
@@ -98,6 +108,7 @@
 
       {% if user.role_id == 1 %}
       <a href="{{url_for('manage_hotel')}}" class="button">Manage your Hotel</a> 
+      <a href="{{url_for('change_hotel_details')}}" class="button">Change Hotel Description</a>
       {% endif %}
       
       {% if user.role_id == 2 %}
