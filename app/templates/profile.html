@@ -7,11 +7,11 @@
 {% block style %}
   <style>
     .container {
-      width: 1000px;
+      width: 50%;
       padding: 20px;
       background-color: #fff;
       border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
       margin: 0 auto;
       margin-top: 20px;
     }
@@ -24,6 +24,9 @@
     }
 
     .profile-details {
+      /* display: flex;
+  flex-direction: column;
+  align-items: center; */
       background-color: #f9f9f9;
       padding: 20px;
       border-radius: 10px;
@@ -51,39 +54,52 @@
     }
 
     .button {
-      display: inline-block;
+      display: block-inline;
+      margin-top: 15px;
       padding: 10px 20px;
-      background-color: #007bff;
+      width: 200px;
+      background-color: #7E42F1;
       color: #fff;
       text-decoration: none;
       border-radius: 5px;
       transition: background-color 0.3s;
+      text-align: center;
     }
 
     .button:hover {
-      background-color: #0056b3;
+      background-color: #4d06d0;
     }
+
+    .profile-picture {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 20px;}
+
+  .links{
+    margin-top: 50px;
+  }
+
+  .links a{
+    margin: 5px;
+  }
+
   </style>
 {% endblock %}
 
 {% block logout%}
-<a class="bg-txt text-white w-28 h-12 rounded-full flex justify-center items-center font-semibold hover:shadow-lg hover:text-primary" href="{{url_for('logout')}}">Logout</a>
+<a class="bg-primary text-white w-28 h-12 rounded-full flex justify-center items-center font-semibold hover:shadow-lg" href="{{url_for('logout')}}">Logout</a>
 {% endblock %}
   
 {% block content %}
   <div class="container">
 
-    {% if user.role_id == 0 %}
-    <h1>Welcome Tourist!</h1>
-    {% endif %}
-    {% if user.role_id == 1 %}
-    <h1>Welcome Hotel Manager!</h1>
-    {% endif %}
-    {% if user.role_id == 2 %}
-    <h1>Welcome Transport Agent!</h1>
-    {% endif %}
+
+    <h1>Welcome<span style="font-weight: bold;">{{user.first_name}} {{user.last_name}}!</span></h1>
+ 
     
     <div class="profile-details">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png" alt="Profile Picture" class="profile-picture">
       <h2>Profile Details</h2>
       <div class="detail">
         <label for="firstName">First Name:</label>
@@ -102,8 +118,10 @@
         <span id="email">{{user.email}}</span>
       </div>
       {% if user.role_id == 0 %}
+      <div class="links">
       <a href="{{url_for('reservation')}}" class="button">Make a Reservation</a> 
       <a href="{{url_for('add_review')}}" class="button">Add a Review</a>
+      <a href="{{url_for('user_reservations')}}" class="button">Your Reservations</a></div>
       {% endif %}
 
       {% if user.role_id == 1 %}
