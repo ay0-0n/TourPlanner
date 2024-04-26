@@ -4,7 +4,7 @@ from app.models import *
 from flask_bcrypt import Bcrypt
 from random import *
 from datetime import datetime 
-import pdfkit
+from xhtml2pdf import pisa
 
 
 @app.route('/')
@@ -155,7 +155,6 @@ def select_transport():
         selected_transport = request.form['transport']
         selected_hotel = request.form['hotel']
         destination_id = request.form['destination']
-        print(selected_transport, selected_hotel, destination_id)
         return redirect(url_for('select_room', hotel=selected_hotel, destination=destination_id, transport=selected_transport))
 
 
@@ -263,7 +262,6 @@ def confirm_booking():
         #Calculating total hotel cost
         stay_duration = abs(departure_date_obj - arrival_date_obj).days
         total_cost = int(room.cost) * stay_duration
-        print(total_cost)
         reservation_date = datetime.now().strftime("%d-%m-%Y")
         # Construct the data dictionary
         data = {
@@ -327,17 +325,17 @@ def download_invoice():
         return "No booking data found."
 
     # Generate invoice HTML content
-    html_content = render_template('invoice_template.html', data=data)
-
-    # Convert HTML to PDF
-    pdf = pdfkit.from_string(html_content, False)
-
-    # Create response with PDF content
-    response = make_response(pdf)
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'inline; filename=invoice.pdf'
+    rendered_html = render_template('invoice_template.html', data=data)
     
-    return response
+    pdf = pisa.CreatePDF(rendered_html)
+
+    if not pdf.err:
+        response = make_response(pdf.dest.getvalue())
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = 'inline; filename=invoice.pdf'
+        return response
+    else:
+        return "PDF generation failed."
 
 
 @app.route('/add_review', methods=['GET', 'POST'])
