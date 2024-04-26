@@ -14,7 +14,7 @@
         }
 
         .container {
-            max-width: 600px;
+            width: 500px !important;
             margin: 50px auto;
             background-color: #fff;
             padding: 20px;
@@ -22,9 +22,27 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        h1 {
+        .container h1 {
+            font-size:larger ;
             text-align: center;
             margin-bottom: 30px;
+        }
+
+        .container a{
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #7E42F1;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .container a:hover{
+            background-color: #4d06d0;
         }
 
         .dropdown {
@@ -45,17 +63,17 @@
             display: block;
             width: 100%;
             padding: 10px;
-            background-color: #007bff;
+            background-color: #7E42F1;
             color: #fff;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
             font-size: 16px;
         }
 
         .btn-submit:hover {
-            background-color: #0056b3;
+            background-color: #4d06d0;
         }
+
     </style>
 {% endblock %}
 
@@ -69,7 +87,7 @@
     <h1>Tour Reservation</h1>
     <form action="/reservation" method = "POST">
         <div class="dropdown">
-            <label for="destination">Select Destination:</label>
+            <label for="destination">Destination:</label>
             <select id="destination" name="destination">
                 {% for destination in destinations %}
                     <option value="{{destination.destination_id}}">{{destination.destination_name}}</option>
@@ -78,7 +96,11 @@
         </div>
         <button type="submit" class="btn-submit">Submit</button>
     </form>
-    <a href="{{url_for('profile')}}" class="bg-black text-white p-2">Go to Profile</a>
+
+    <a href="{{url_for('profile')}}">Back to Profile</a>
+    
 </div>
+
+
 
 {% endblock %}
