@@ -211,16 +211,12 @@ def select_date():
     return render_template('select_date.html', destination=destination_id, hotel=selected_hotel, transport=selected_transport, room=selected_room)
 
 
-def generateReservationID(user_id, reservation_date):
+def generateReservationID(user_id):
     reservation_id = str(user_id)
-    date = str(reservation_date.date()).split('-')
-    for i in date:
-        reservation_id += i
-
-    time = str(reservation_date.time())[:8].split(':')
-    for i in time:
-        reservation_id += i
-    return str(reservation_id)
+    current_date = datetime.now().strftime("%Y%m%d")
+    current_time = datetime.now().strftime("%H%M%S")
+    
+    return str(reservation_id+current_date+current_time)
 
 
 
@@ -241,11 +237,11 @@ def confirm_booking():
 
 
         user = User.query.filter_by(username=session['current_user']).first().user_id
-        reservation_id=generateReservationID(user, destination_id, selected_hotel, selected_transport, selected_room, reservation_date)
+        reservation_id=generateReservationID(user)
 
         new_reservation = Reservation(
             user_id=user,
-            # reservation_id=reservation_id,
+            reservation_id=reservation_id,
             transport_id=selected_transport,
             room_id=selected_room,
             arrival_date=arrival_date_obj,
