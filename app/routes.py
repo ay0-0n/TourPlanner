@@ -94,6 +94,29 @@ def profile():
     else:
         return redirect(url_for('login'))
 
+
+@app.route('/user_reservations', methods=['GET', 'POST'])
+def user_reservations():
+    if 'current_user' in session:
+        username = session['current_user']
+        user = User.query.filter_by(username = username).first()
+
+    reservations = Reservation.query.filter_by(user_id = user.user_id).all()
+    # for reservation in reservations:
+    #     print(reservation.room_id)
+    return render_template('user_reservations.html', reservations = reservations)
+
+
+@app.route('/cancel_reservation', methods=['GET', 'POST'])
+def cancel_reservation():
+    reservation_id = request.args.get("reservation_id")
+    reservation = Reservation.query.filter_by(reservation_id=reservation_id).first()
+
+    db.session.delete(reservation)
+    db.session.commit()
+    return redirect(url_for('user_reservations'))
+
+
 @app.route('/reservation', methods = ['GET', 'POST'])
 def reservation():
     if 'current_user' in session and session['user_type'] == 'tourist':
@@ -172,8 +195,16 @@ def select_date():
         selected_hotel = request.form['hotel']
         destination_id = request.form['destination']
 
+        current_date = str(datetime.now())
+
         if selected_arrival_date >= selected_departure_date:
-            return render_template('select_date.html', destination=destination_id, hotel=selected_hotel, transport=selected_transport, room=selected_room, error='Arrival date must be before departure date!')
+            flash('Arrival date must be before departure date!')
+            return render_template('select_date.html', destination=destination_id, hotel=selected_hotel, transport=selected_transport, room=selected_room)
+        
+        elif selected_arrival_date <= current_date:
+            flash('Cannot time travel to the past!')
+            return render_template('select_date.html', destination=destination_id, hotel=selected_hotel, transport=selected_transport, room=selected_room)
+        
         else:
             return redirect(url_for('confirm_booking', room=selected_room, transport=selected_transport, hotel=selected_hotel, destination=destination_id, arrival_date=selected_arrival_date, departure_date=selected_departure_date))
 
@@ -202,18 +233,19 @@ def confirm_booking():
         selected_room = request.form['room']
         arrival_date = request.form['arrival_date']
         departure_date = request.form['departure_date']
-        dinner_reservation = bool(int(request.form['dinner_reservation']))
-
+        #Converting to objects
         arrival_date_obj = datetime.strptime(arrival_date, '%Y-%m-%d')
         departure_date_obj = datetime.strptime(departure_date, '%Y-%m-%d')
-
+        dinner_reservation = bool(int(request.form['dinner_reservation']))
         reservation_date = datetime.now()
 
+
         user = User.query.filter_by(username=session['current_user']).first().user_id
+        reservation_id=generateReservationID(user, destination_id, selected_hotel, selected_transport, selected_room, reservation_date)
 
         new_reservation = Reservation(
             user_id=user,
-            reservation_id=generateReservationID(user, destination_id, selected_hotel, selected_transport, selected_room, reservation_date),
+            reservation_id=reservation_id,
             transport_id=selected_transport,
             room_id=selected_room,
             arrival_date=arrival_date_obj,
@@ -230,6 +262,11 @@ def confirm_booking():
         hotel = Hotels.query.filter_by(hotel_id=selected_hotel).first()
         transport = Transports.query.filter_by(transport_id=selected_transport).first()
         room = Rooms.query.filter_by(room_id=selected_room).first()
+
+
+        #Calculating total hotel cost
+        stay_duration = abs(departure_date_obj - arrival_date_obj).days
+        total_cost = int(room.cost) * stay_duration
 
         # Construct the data dictionary
         data = {
@@ -255,11 +292,22 @@ def confirm_booking():
             'arrival_date': arrival_date,
             'departure_date': departure_date,
             'dinner_reservation': bool(int(dinner_reservation)),
-            'reservation_date': reservation_date
+            'reservation_id': reservation_id,
+            'reservation_date': reservation_date,
+            'stay_duration': stay_duration,
+            'total_room_cost': total_cost
         }
-        print(data)
         session['booking_data'] = data
         return redirect(url_for('booking_success'))
+    
+    # If the request method is GET, render the confirm_booking template with the provided data
+    destination_id = request.args.get('destination')
+    selected_hotel = request.args.get('hotel')
+    selected_transport = request.args.get('transport')
+    selected_room = request.args.get('room')
+    arrival_date = request.args.get('arrival_date')
+    departure_date = request.args.get('departure_date')
+    return render_template('confirm_booking.html', destination=destination_id, hotel=selected_hotel, transport=selected_transport, room=selected_room, arrival_date=arrival_date, departure_date=departure_date)
     
     # If the request method is GET, render the confirm_booking template with the provided data
     destination_id = request.args.get('destination')
@@ -282,35 +330,26 @@ def booking_success():
 
 @app.route('/download_invoice')
 def download_invoice():
+    # Retrieve booking data from session
     data = session.get('booking_data')
+
+    # Error handling if booking data is missing or invalid
     if not data:
         return "No booking data found."
-    
-    # Render the HTML template with the provided data
-    html_content = f"""
-    <h1>Invoice</h1>
-    <hr/>
-    <p><strong>Destination:</strong> {data['destination']['destination_name']}</p>
-    <p><strong>Hotel:</strong> {data['hotel']['hotel_name']}</p>
-    <p><strong>Transport:</strong> {data['transport']['transport_type']}</p>
-    <p><strong>Room no:</strong> {data['room']['room_no']}</p>
-    <p><strong>Room Type:</strong> {data['room']['room_type']}</p>
-    <p><strong>Arrival Date:</strong> {data['arrival_date']}</p>
-    <p><strong>Departure Date:</strong> {data['departure_date']}</p>
-    <p><strong>Dinner Reservation:</strong> {"Yes" if data['dinner_reservation'] else "No"}</p>
-    <p><strong>Reservation Date:</strong> {data['reservation_date']}</p>
-    <p><strong>Total Cost:</strong> {data['room']['cost'] + data['transport']['cost']}</p>
-    
-    """
 
-    # Convert the HTML to PDF
+    # Generate invoice HTML content
+    html_content = render_template('invoice_template.html', data=data)
+
+    # Convert HTML to PDF
     pdf = pdfkit.from_string(html_content, False)
 
-    # Create a response
+    # Create response with PDF content
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = 'inline; filename=invoice.pdf'
+    
     return response
+
 
 @app.route('/add_review', methods=['GET', 'POST'])
 def add_review():
@@ -318,18 +357,32 @@ def add_review():
         destination_id = request.form['destination']
         review = request.form['review']
         rating = request.form['rating']
+        
+        # Getting user ID from the session
+        user_id = User.query.filter_by(username = session['current_user']).first().user_id
 
-        new_review = Reviews(
-            user_id = User.query.filter_by(username=session['current_user']).first().user_id,
-            dest_id = destination_id,
-            feedback = review,
-            rating = rating
-        )
+        # Checking if the user already reviewed the destination
+        existing_review = Reviews.query.filter_by(user_id=user_id, dest_id=destination_id).first()
 
-        db.session.add(new_review)
-        db.session.commit()
-        return redirect(url_for('profile'))
-    return render_template('add_review.html', destinations=TourDestination.query.all())
+        if existing_review:
+            flash('Already Reviewed!', 'danger')
+            return redirect(url_for('add_review'))
+
+        else:
+            new_review = Reviews(
+                user_id=User.query.filter_by(username=session['current_user']).first().user_id,
+                dest_id=destination_id,
+                rating=rating,
+                feedback=review,
+            )
+
+            db.session.add(new_review)
+            db.session.commit()
+            flash('Reviewed Successfully!', 'success')
+            return redirect(url_for('add_review'))
+
+    destinations = TourDestination.query.all()
+    return render_template('add_review.html', destinations=destinations)
 
 
 
