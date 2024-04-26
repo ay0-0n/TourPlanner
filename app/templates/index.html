@@ -17,7 +17,7 @@
                 'txt': '#131313',
                 'sml-txt':'#13131399',
                 'primary': '#7E42F1',
-                'secondary': '#DF905A',
+                'secondary': '#99ffcc',
               }
             }
           }
@@ -29,8 +29,8 @@
 </head>
 <body style="margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth;">
     <header>
-        <nav class="bg-secondary mx-auto flex justify-between items-center px-5 py-4 border-b-[1px] border-txt h-[4.5rem]">
-                <a href="{{ url_for('index')}}" class="text-txt font-bold text-4xl"><span class="text-primary">Tour</span>Planner</a>
+        <nav class="bg-secondary mx-auto flex justify-between items-center px-5 py-4 border-txt h-[4.5rem]">
+          <a href="{{ url_for('index')}}" class="text-txt font-bold text-4xl"><span class="text-primary">Tour</span>Planner</a>
                 {% block seeDestination%}
                 {% endblock %}
                 {% block logout%}
