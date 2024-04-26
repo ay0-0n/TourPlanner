@@ -211,8 +211,8 @@ def select_date():
     return render_template('select_date.html', destination=destination_id, hotel=selected_hotel, transport=selected_transport, room=selected_room)
 
 
-def generateReservationID(user_id, destination_id, hotel_id, transport_id, room_id, reservation_date):
-    reservation_id = str(user_id) + str(destination_id) + str(hotel_id) + str(transport_id) + str(room_id) 
+def generateReservationID(user_id, reservation_date):
+    reservation_id = str(user_id)
     date = str(reservation_date.date()).split('-')
     for i in date:
         reservation_id += i
@@ -220,7 +220,7 @@ def generateReservationID(user_id, destination_id, hotel_id, transport_id, room_
     time = str(reservation_date.time())[:8].split(':')
     for i in time:
         reservation_id += i
-    return int(reservation_id)
+    return str(reservation_id)
 
 
 
@@ -245,7 +245,7 @@ def confirm_booking():
 
         new_reservation = Reservation(
             user_id=user,
-            reservation_id=reservation_id,
+            # reservation_id=reservation_id,
             transport_id=selected_transport,
             room_id=selected_room,
             arrival_date=arrival_date_obj,
@@ -267,7 +267,8 @@ def confirm_booking():
         #Calculating total hotel cost
         stay_duration = abs(departure_date_obj - arrival_date_obj).days
         total_cost = int(room.cost) * stay_duration
-
+        print(total_cost)
+        reservation_date = datetime.now().strftime("%d-%m-%Y")
         # Construct the data dictionary
         data = {
             'destination': {
@@ -309,15 +310,7 @@ def confirm_booking():
     departure_date = request.args.get('departure_date')
     return render_template('confirm_booking.html', destination=destination_id, hotel=selected_hotel, transport=selected_transport, room=selected_room, arrival_date=arrival_date, departure_date=departure_date)
     
-    # If the request method is GET, render the confirm_booking template with the provided data
-    destination_id = request.args.get('destination')
-    selected_hotel = request.args.get('hotel')
-    selected_transport = request.args.get('transport')
-    selected_room = request.args.get('room')
-    arrival_date = request.args.get('arrival_date')
-    departure_date = request.args.get('departure_date')
-    return render_template('confirm_booking.html', destination=destination_id, hotel=selected_hotel, transport=selected_transport, room=selected_room, arrival_date=arrival_date, departure_date=departure_date)
-
+    
 
 @app.route('/booking_success', methods=['GET', 'POST'])
 def booking_success():
@@ -541,3 +534,4 @@ def logout():
     session.pop('user_type', None)
     session.pop('booking_data', None)
     return redirect(url_for('login'))
+
