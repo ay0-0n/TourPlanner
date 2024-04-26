@@ -6,13 +6,58 @@
 
 {% block style %}
 <style>
-    form {
-        max-width: 500px;
-        margin: 0 auto;
+    body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+    .container {
+        width: 500px !important;
+        margin: 50px auto;
+        background-color: #fff;
         padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .container h1 {
+        font-size:larger ;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .container a{
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #7E42F1;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+    .container a:hover{
+        background-color: #4d06d0;
+    }
+
+    .dropdown {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+    .dropdown select {
+        width: 100%;
+        padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
-        background-color: #f9f9f9;
+        outline: none;
+        font-size: 16px;
+        margin-bottom: 5px;
     }
 
     label {
@@ -33,19 +78,39 @@
         color: black;
     }
 
-    button[type="submit"] {
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 3px;
-        padding: 10px 20px;
-        cursor: pointer;
-        font-size: 16px;
+    .center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     }
 
-    button[type="submit"]:hover {
-        background-color: #0056b3;
+    .flash-message {
+    width:200px; /* 100% of the viewport width */
+    background-color: #007bff; /* Change to your desired background color */
+    color: #fff; /* Change to your desired text color */
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
     }
+
+    .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #7E42F1;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+    .btn-submit:hover {
+        background-color: #4d06d0;
+    }
+
 </style>
 {% endblock %}
 
@@ -54,30 +119,51 @@
 {% endblock %}
   
 {% block content %}
-<h1>Add Review</h1>
-<form method="POST">
-    <div>
-        <label for="destination">Destination:</label>
-        <select id="destination" name="destination" required>
-            {% for destination in destinations %}
-                <option value="{{ destination.destination_id}}">{{ destination.destination_name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div>
-        <label for="review">Review:</label>
-        <textarea id="review" name="review" rows="4" required></textarea>
-    </div>
-    <div>
-        <label for="rating">Rating:</label>
-        <select id="rating" name="rating" required>
-            <option value="5">5 - Excellent</option>
-            <option value="4">4 - Very Good</option>
-            <option value="3">3 - Good</option>
-            <option value="2">2 - Fair</option>
-            <option value="1">1 - Poor</option>
-        </select>
-    </div>
-    <button type="submit">Submit Review</button>
-</form>
+
+<!-- Display Flash Messages -->
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+
+        {% for message in messages %}
+            <div class='center'><div class = 'flash-message'>{{ message }}</div></div>
+        {% endfor %}
+        
+    {% endif %}
+{% endwith %}
+
+
+<div class = 'container'>
+    <h1>Add Review</h1>
+
+    <form method="POST">
+        <div class="dropdown">
+            <label for="destination">Destination:</label>
+            <select id="destination" name="destination" required>
+                {% for destination in destinations %}
+                    <option value="{{ destination.destination_id}}">{{ destination.destination_name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="rating">Rating:</label>
+            <select id="rating" name="rating" required>
+                <option value="5">5 - Excellent</option>
+                <option value="4">4 - Very Good</option>
+                <option value="3">3 - Good</option>
+                <option value="2">2 - Fair</option>
+                <option value="1">1 - Poor</option>
+            </select>
+
+        </div>
+        
+        <div>
+            <label for="review">Feedback:</label>
+            <textarea id="review" name="review" rows="4" required></textarea>
+        </div>
+        <div>
+
+        </div>
+        <button type="submit" class = 'btn-submit'>Submit Review</button>
+    </form>
+    <a href="{{url_for('profile')}}">Back to Profile</a>
+</div>
 {% endblock %}
