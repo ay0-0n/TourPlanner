@@ -89,6 +89,7 @@ class Reservation(db.Model):
     arrival_date = db.Column(db.DateTime)
     departure_date = db.Column(db.DateTime)
     dinner_reservation = db.Column(db.Boolean)
+    room = db.relationship('Rooms', backref='reservation')
 
     def __repr__(self):
         return f"<Reservation(user_id={self.user_id}, reservation_id={self.reservation_id})>"
