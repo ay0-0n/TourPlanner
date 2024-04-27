@@ -527,7 +527,7 @@ def delete_transport(transport_id):
     
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
+    session.pop('current_user', None)
     session.pop('user_type', None)
     session.pop('booking_data', None)
     return redirect(url_for('login'))
