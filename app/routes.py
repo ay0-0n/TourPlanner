@@ -7,6 +7,7 @@ from datetime import datetime
 from xhtml2pdf import pisa
 
 
+
 @app.route('/')
 @app.route('/home')
 def index():
@@ -76,7 +77,7 @@ def signup():
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
         new_user = User(first_name=first_name, last_name=last_name, phone_number=phone_number,
-                        email=email, username=username, password=hashed_password, role_id=role_id)
+                        email = email, username = username, password = hashed_password, role_id = role_id)
 
         db.session.add(new_user)
         db.session.commit()
@@ -84,6 +85,7 @@ def signup():
         return redirect(url_for('login'))
 
     return render_template('signup.html')
+
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -210,8 +212,8 @@ def select_date():
     return render_template('select_date.html', destination=destination_id, hotel=selected_hotel, transport=selected_transport, room=selected_room)
 
 
-def generateReservationID(user_id):
-    reservation_id = str(user_id)
+def generateReservationID(user):
+    reservation_id = str(user.user_id)
     current_date = datetime.now().strftime("%Y%m%d")
     current_time = datetime.now().strftime("%H%M%S")
     
@@ -235,18 +237,18 @@ def confirm_booking():
         reservation_date = datetime.now()
 
 
-        user = User.query.filter_by(username=session['current_user']).first().user_id
+        user = User.query.filter_by(username=session['current_user']).first()
         reservation_id=generateReservationID(user)
 
         new_reservation = Reservation(
-            user_id=user,
-            reservation_id=reservation_id,
-            transport_id=selected_transport,
-            room_id=selected_room,
-            arrival_date=arrival_date_obj,
-            departure_date=departure_date_obj,
-            dinner_reservation=dinner_reservation,
-            reservation_date=reservation_date
+            user_id = user.user_id,
+            reservation_id = reservation_id,
+            transport_id = selected_transport,
+            room_id = selected_room,
+            arrival_date = arrival_date_obj,
+            departure_date = departure_date_obj,
+            dinner_reservation = dinner_reservation,
+            reservation_date = reservation_date
         )
         
         db.session.add(new_reservation)
@@ -290,7 +292,8 @@ def confirm_booking():
             'reservation_id': reservation_id,
             'reservation_date': reservation_date,
             'stay_duration': stay_duration,
-            'total_room_cost': total_cost
+            'total_room_cost': total_cost,
+            'user_name': f'{user.first_name} {user.last_name}'
         }
         session['booking_data'] = data
         return redirect(url_for('booking_success'))
@@ -528,4 +531,3 @@ def logout():
     session.pop('user_type', None)
     session.pop('booking_data', None)
     return redirect(url_for('login'))
-
