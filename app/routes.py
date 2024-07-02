@@ -332,7 +332,7 @@ def add_review():
     return render_template('add_review.html', destinations=TourDestination.query.all())
 
 
-
+#-------------------------------------------------------------------------------------------------
 @app.route('/manage_hotel', methods = ['GET', 'POST'])
 def manage_hotel():
     if 'current_user' in session and session['user_type'] == 'hotel-manager':
